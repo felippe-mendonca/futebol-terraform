@@ -54,13 +54,9 @@ resource "openstack_compute_instance_v2" "instances" {
   network {
     port = "${element(openstack_networking_port_v2.instance_ports.*.id, count.index)}"
   }
-}
-
-resource "null_resource" "start_command" {
-  count = "${length(var.instances)}"
 
   connection {
-    host        = "${element(openstack_compute_instance_v2.instances.*.access_ip_v4, count.index)}"
+    host        = "${lookup(var.instances[count.index], "ip_address")}"
     type        = "ssh"
     user        = "ubuntu"
     private_key = "${file("${var.privite_key_path}")}"
