@@ -1,5 +1,9 @@
 image_base = "futebol-exp22-base"
 
+public_key_path = "etc/id_rsa_jfed.pub"
+
+privite_key_path = "etc/id_rsa_jfed"
+
 instances = [
   {
     instance_name = "is-rabbitmq"

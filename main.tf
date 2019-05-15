@@ -21,8 +21,8 @@ data "openstack_networking_subnet_v2" "provider" {
 }
 
 resource "openstack_compute_keypair_v2" "keypair" {
-  name       = "jfed_key"
-  public_key = "${file("etc/id_rsa_jfed.pub")}"
+  name       = "exp22_key"
+  public_key = "${file("${var.public_key_path}")}"
 }
 
 # --- Instances
@@ -48,7 +48,7 @@ resource "openstack_compute_instance_v2" "instances" {
   name            = "${lookup(var.instances[count.index], "instance_name")}"
   image_name      = "${var.image_base}"
   flavor_name     = "${lookup(var.instances[count.index], "flavor_name")}"
-  key_pair        = "jfed_key"
+  key_pair        = "exp22_key"
   security_groups = ["default"]
 
   network {
@@ -63,7 +63,7 @@ resource "null_resource" "start_command" {
     host        = "${element(openstack_compute_instance_v2.instances.*.access_ip_v4, count.index)}"
     type        = "ssh"
     user        = "ubuntu"
-    private_key = "${file("etc/id_rsa_jfed")}"
+    private_key = "${file("${var.privite_key_path}")}"
   }
 
   provisioner "remote-exec" {
