@@ -1,0 +1,1 @@
+exec bash -c "source etc/load-configuration.bash; exec fish"

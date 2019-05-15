@@ -29,12 +29,10 @@ data "terraform_remote_state" "networking" {
 resource "openstack_networking_port_v2" "instance_ports" {
   count = "${length(var.instances)}"
 
-
   name           = "${lookup(var.instances[count.index], "instance_name")}"
   network_id     = "${data.terraform_remote_state.networking.provider_net_id}"
-  # admin_state_up = "true"
   mac_address    = "${lookup(var.instances[count.index], "mac_address")}"
-
+  admin_state_up = "true"
 
   fixed_ip = [
     {
@@ -44,17 +42,14 @@ resource "openstack_networking_port_v2" "instance_ports" {
   ]
 }
 
-
 resource "openstack_compute_instance_v2" "instances" {
   count = "${length(var.instances)}"
-
 
   name            = "${lookup(var.instances[count.index], "instance_name")}"
   image_name      = "${var.image_base}"
   flavor_name     = "${lookup(var.instances[count.index], "flavor_name")}"
-  security_groups = ["default"]
   key_pair        = "jfed_key"
-
+  security_groups = ["default"]
 
   network {
     port = "${element(openstack_networking_port_v2.instance_ports.*.id, count.index)}"
@@ -62,20 +57,20 @@ resource "openstack_compute_instance_v2" "instances" {
 }
 
 
-# resource "null_resource" "start_command" {
-#   count = "${length(var.instances)}"
+resource "null_resource" "start_command" {
+  count = "${length(var.instances)}"
 
 
-#   connection {
-#     host        = "${element(openstack_compute_instance_v2.instances.*.access_ip_v4, count.index)}"
-#     type        = "ssh"
-#     user        = "ubuntu"
-#     private_key = "${file("etc/id_rsa_jfed")}"
-#   }
+  connection {
+    host        = "${element(openstack_compute_instance_v2.instances.*.access_ip_v4, count.index)}"
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = "${file("etc/id_rsa_jfed")}"
+  }
 
 
-#   provisioner "remote-exec" {
-#     inline = "sudo /futebol/vms/${lookup(var.instances[count.index], "instance_name")}/run.bash"
-#   }
-# }
+  provisioner "remote-exec" {
+    inline = "sudo /futebol/vms/${lookup(var.instances[count.index], "instance_name")}/run.bash"
+  }
+}
 

@@ -3,7 +3,7 @@ image_base = "futebol-exp22-base"
 instances = [
   {
     instance_name = "is-rabbitmq"
-    flavor_name   = "p1.medium"
+    flavor_name   = "p1.large"
     ip_address    = "10.61.1.10"
     mac_address   = "fa:16:3e:f5:23:7e"
   },
@@ -21,7 +21,7 @@ instances = [
   },
   {
     instance_name = "is-image-processing"
-    flavor_name   = "p1.medium"
+    flavor_name   = "p1.large"
     ip_address    = "10.61.1.246"
     mac_address   = "fa:16:3e:67:fb:15"
   },
